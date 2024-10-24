@@ -16,7 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private final SecurityUtils securityUtils;
     private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
@@ -25,12 +24,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests.anyRequest().authenticated());
         http
-//                .oauth2ResourceServer((oauth2ResourceServer) ->
-//                        oauth2ResourceServer.jwt(
-//                                (jwt) -> jwt.decoder(securityUtils.jwtDecoder())
-//                        )
-//                );
-                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthConverter);
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                                jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)
+                        )
+                );
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
